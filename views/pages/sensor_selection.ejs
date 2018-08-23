@@ -13,12 +13,28 @@
 
     <div id="wrapper">
 
-		<% var activepage = "dashboard"; %>
+		<% var activepage = "sensor_selection"; %>
       <% include ../partials/sidebar.ejs %>
 
       <div id="content-wrapper">
 
         <div class="container-fluid">
+		
+		Haltestellen: 
+		<% for(i=0; i<peoplecounters.stops.length; i++) {%> 
+			<%= peoplecounters.stops[i] %>
+			<% if(i < peoplecounters.stops.length - 1) {%>
+				,&nbsp;
+			<% } %>
+		<% } %>
+		<br>
+		Felder: 
+		<% for(i=0; i<peoplecounters.fields.length; i++) {%> 
+			<%= peoplecounters.fields[i] %>
+			<% if(i < peoplecounters.fields.length - 1) {%>
+				,&nbsp;
+			<% } %>
+		<% } %>
 
         <!-- /.container-fluid -->
 
