@@ -1,0 +1,27 @@
+{
+  "name": "buergerplatform-ulm",
+  "version": "0.0.1",
+  "description": "Bürgerplatform zur Interaktion mit Bewegungsdaten erfasst in der Stadt Ulm",
+  "main": "server.js",
+  "dependencies": {
+    "bootstrap": "^4.1.3",
+    "express": "^4.16.3",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clemensvonschwerin/buergerplatform-ulm.git"
+  },
+  "author": "Clemens von Schwerin <c.schwerin@hs-ulm.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/clemensvonschwerin/buergerplatform-ulm/issues"
+  },
+  "homepage": "https://github.com/clemensvonschwerin/buergerplatform-ulm#readme"
+}
