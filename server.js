@@ -54,7 +54,7 @@ var availableFields = [];
 
 var pcf = function(req, res, next) {
     sensor_selection.runOnAvailablePeoplecounters(function(peoplecounters){
-        availablePeoplecounters = peoplecounters;
+        availablePeoplecounters = ['Haltestelle1', 'Haltestelle2', 'Haltestelle3'];
         //console.log('Haltestellen ' + availablePeoplecounters);
         next();
     });
@@ -62,7 +62,7 @@ var pcf = function(req, res, next) {
 
 var ff = function(req, res, next) {
     sensor_selection.runOnAvailableFields(function(fields){
-        availableFields = fields;
+        availableFields = ['Feld1', 'Feld2', 'Feld3'];
         //console.log('Fields ' + availableFields);
         next();
     });
