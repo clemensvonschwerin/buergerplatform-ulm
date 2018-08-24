@@ -41,13 +41,33 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get('/', function(req, res) {
-    res.render('pages/index');
-});
+var dashboardf = function(req, res) {
+    var targets = [];
+    if(req.session && req.session.peoplecounters) {
+        for(key in req.session.peoplecounters) {
+            var fields=[];
+            for(fieldkey in req.session.peoplecounters[key]) {
+                if(req.session.peoplecounters[key][fieldkey] == 'on') {
+                    fields.push({'params': [fieldkey], 'type': 'field'});
+                }
+            }
+            if(fields.length > 0) {
+                var target = {'groupBy': [], 'measurement': 'peoplecounter',
+                                'orderByTime': 'ASC', 'policy': 'autogen',
+                                'resultFormat': 'time_series',
+                                'select': [fields],
+                                'tags': [{'key': 'busstop', 'operator': '=', 'value': key}]};
+                targets.push(target);
+            }
+        }
+    }
+    console.log("Rendering with targets: " + util.inspect(targets));
+    res.render('pages/index', {targets: encodeURI(JSON.stringify(targets))});
+};
 
-app.get('/index', function(req, res) {
-    res.render('pages/index');
-});
+app.get('/', dashboardf);
+
+app.get('/index', dashboardf);
 
 var availablePeoplecounters=[];
 var availableFields = [];

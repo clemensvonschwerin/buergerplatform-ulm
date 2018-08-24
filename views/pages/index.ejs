@@ -8,6 +8,8 @@
   </head>
 
   <body id="page-top">
+  
+
 
     <% include ../partials/topbar.ejs %>
 
@@ -19,6 +21,12 @@
       <div id="content-wrapper">
 
         <div class="container-fluid">
+		
+		<div class="embed-responsive embed-responsive-16by9">
+		
+			<iframe id="grafana-frame" class="embed-responsive-item" src="http://141.59.41.149:3000/dashboard/script/buergerplatform.js?orgId=1&targets=<%= targets %>" allowfullscreen />
+			
+		</div>
 
         <!-- /.container-fluid -->
 
@@ -31,6 +39,89 @@
     <!-- /#wrapper -->
 
     <% include ../partials/scripts.ejs %>
+	
+	<script src="vendor/mutation-summary/mutation-summary.js" />
+	<script>
+	// Don't forget to load the mutation-summary.js lib
+
+	function iframeLoad (iframe) {
+		// Disable this if you want users to have access to playground buttons like:
+		// add Rows, edit Panels, dashboard settings ...
+		readOnlyMode = true;
+
+		// This is the iframe "window"
+		var iframe_window = iframe.contentWindow;
+
+		// This is the iframe "document" under which the MutationObserver will look for DOM changes
+		var iframe_document = iframe.contentDocument;
+
+		var queries = [{
+			// This is the main menu of grafana
+			element: '.navbar-brand-btn' 
+		},{ 
+			// This is the dashboard selection right of the main menu
+			element: '.navbar-page-btn' 
+		},{ 
+			// This is the share button appearing inside the .dashnav-action-icons, we don't want to allow
+			// this to anybody, as it's exposes the real url, thus bypassing this code
+			element: 'li[ng-show="::dashboardMeta.canShare"]' 
+		},{ 
+			// This is the dashboard delete button, under dashboard setting button
+			element: 'a[ng-click="deleteDashboard();"]' 
+		}];
+
+
+		if ( readOnlyMode ) {
+			queries.push({ 
+				// This is the three vertical dots button to open the row menu/edit
+				element: '.dash-row-menu-grip' 
+			});
+			queries.push({
+				// This is the bottom "+ ADD ROW" button
+				element: '.add-row-panel-hint'
+			});
+			queries.push({
+				// This is the share button right of the dashboard menu
+				element: '.dashnav-action-icons' 
+			});
+			queries.push({
+				// This is the "Panel" menu triggered by clicking the Panel name
+				element: '.panel-menu' 
+			});
+		}
+
+
+		var observer;
+		observer = new MutationSummary({
+			callback: function (changes) {
+				changes.forEach(function (change) {
+					change.added.forEach(function (el) {
+						iframe_window.angular.element(el).addClass('ng-hide');
+					});
+				});
+
+				// Normally we disconnect here to free resources, but on new dashboards
+				// the buttons will be re-rendered by Angular, so we keep this to block that behaviour
+				//observer.disconnect();
+			},
+			queries: queries,
+			rootNode: iframe_document
+		});
+
+
+		// Hide the elements if they are already generated before we registred the Observer
+		// is a race condition afterall "Angular rendering" vs "registering the Observer"
+		queries.forEach( function (el) {
+			if ( iframe_window && iframe_window.angular ) {
+				iframe_window.angular.element(el.element).addClass('ng-hide');
+			}
+		});
+
+		// Remove the mask or move the iframe into view if needed
+	}
+	
+	$(document).ready(iframeLoad(document.getElementById("grafana-frame"));
+	</script>
 
   </body>
 
