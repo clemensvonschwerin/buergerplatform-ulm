@@ -99,8 +99,8 @@ app.post('/sensor_selection', function(req, res) {
     /* Only checked boxes are sent */
 
     var pc = {};
-        /* Initialize everything as deselected */
-        for(i=0; i<availablePeoplecounters.length; i++) {
+    /* Initialize everything as deselected */
+    for(i=0; i<availablePeoplecounters.length; i++) {
         pc[availablePeoplecounters[i]] = {};
         for(j=0; j<availableFields.length; j++) {
             pc[availablePeoplecounters[i]][availableFields[j]] = 'off';
@@ -112,8 +112,10 @@ app.post('/sensor_selection', function(req, res) {
     for(i=0; i<keys.length; i++) {
         //Parts: ["pc", peoplecounter, field]
         var parts = keys[i].split('_');
+        console.log("Searching for " + parts[1] + " in " + Object.keys(req.session.peoplecounters));
         if(!(parts[1] in Object.keys(req.session.peoplecounters))) {
             req.session.peoplecounters[parts[1]] = {};
+            console.log("Not found, initialized empty object!");
         }
         req.session.peoplecounters[parts[1]][parts[2]] = req.body[keys[i]]; 
     }
