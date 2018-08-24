@@ -373,3 +373,23 @@ body.sidebar-toggled footer.sticky-footer {
     width: calc(100% - 90px);
   }
 }
+
+.panel-heading .accordion-toggle:after {
+    /* symbol for "opening" panels */
+    font-family: "Font Awesome 5";
+    content: "\f107";    /* adjust as needed, taken from bootstrap.css */
+    float: right;        /* adjust as needed */
+    color: grey;         /* adjust as needed */
+	position: relative;
+	@font-face {
+		font-family: 'Font Awesome 5';
+		font-style: normal;
+		font-weight: normal;
+		src: url("../vendor/fontawsome-free/webfonts/fa-brands-400.eot");
+		src: url("../vendor/fontawsome-free/webfonts/fa-brands-400.eot?#iefix") format("embedded-opentype"), url("../vendor/fontawsome-free/webfonts/fa-brands-400.woff2") format("woff2"), url("../vendor/fontawsome-free/webfonts/fa-brands-400.woff") format("woff"), url("../vendor/fontawsome-free/webfonts/fa-brands-400.ttf") format("truetype"), url("../vendor/fontawsome-free/webfonts/fa-brands-400.svg#fontawesome") format("svg"); }
+
+}
+.panel-heading .accordion-toggle.collapsed:after {
+    /* symbol for "collapsed" panels */
+    content: "\f106";    /* adjust as needed, taken from bootstrap.css */
+}

@@ -8,43 +8,25 @@ const fs = require('fs');
 const express = require('express');
 const path = require('path');
 const sensor_selection = require('./js/sensor_selection')
+const icons = require('glyphicons');
+const body_parser = require('body-parser');
+const util = require('util');
+const session = require('client-sessions');
 
 const app = express();
 
 const hostname = '0.0.0.0';
 const port = 3003;
 
-/*const sensorQuery = encodeURI('http://127.0.0.1:8086/query?db=loradata;q=SHOW TAG VALUES FROM autogen.peoplecounter WITH KEY = "busstop"');
-const fieldsQuery = encodeURI('http://127.0.0.1:8086/query?db=loradata;q=SHOW FIELD KEYS FROM autogen.peoplecounter');
+app.use(body_parser.urlencoded());
+app.use(body_parser.json());
 
-var availablePeoplecounters = [];
-var availableFields = [];
-http.get(sensorQuery, (resp) => {
-    let data = '';
-    resp.on('data', (chunk) => {
-        data += chunk;
-    });
-    resp.on('end', () => {
-        obj = JSON.parse(data);
-        busstops = obj.results[0].series[0].values;
-        for(i=0; i<busstops.length; i++) {
-            availablePeoplecounters.push(busstops[i][1]);
-        }
-    });
-});
-http.get(fieldsQuery, (resp) => {
-    let data = '';
-    resp.on('data', (chunk) => {
-        data += chunk;
-    });
-    resp.on('end', () => {
-        obj = JSON.parse(data);
-        fields = obj.results[0].series[0].values;
-        for(i=0; i<fields.length; i++) {
-            availableFields.push(fields[i][0]);
-        }
-    });
-}); */
+app.use(session({
+    cookieName: 'session',
+    secret: 'doay8KQiC6ZFeqxMJMMI4zGLuAx6f0lmGNG3jJRetd56mP0NxbNeCa6D6cE9GVn',
+    duration: 1000 * 3600 * 48,
+    activeDuration: 1000 * 3600 * 24,
+}));
 
 app.use('/vendor', express.static(__dirname + '/vendor'));
 app.use('/css', express.static(__dirname + '/css'));
@@ -87,13 +69,57 @@ var ff = function(req, res, next) {
 }
 
 var renderf = function(req, res) {
-    res.render('pages/sensor_selection', {peoplecounters: {stops: availablePeoplecounters, fields: availableFields}});
+    var pc = {};
+    if(req.session && req.session.peoplecounters && 
+        !(Object.keys(req.session.peoplecounters).length === 0 && req.session.peoplecounters.constructor === Object)) {
+        pc = req.session.peoplecounters;
+    } else {
+        /* Initialize everything as deselected */
+        for(i=0; i<availablePeoplecounters.length; i++) {
+            pc[availablePeoplecounters[i]] = {};
+            for(j=0; j<availableFields.length; j++) {
+                pc[availablePeoplecounters[i]][availableFields[j]] = 'off';
+            }
+        }
+    }
+
+    console.log("Rendering with sensor_selection: " + util.inspect(pc));
+    res.render('pages/sensor_selection', {peoplecounters: pc});
 };
 
 app.get('/sensor_selection', [pcf, ff, renderf]);
 
 app.get('*', function(req, res) {
     res.render('pages/404');
+});
+
+selected_sensors = [];
+app.post('/sensor_selection', function(req, res) {
+    console.log("Got data: " + util.inspect(req.body));
+    /* Only checked boxes are sent */
+
+    var pc = {};
+        /* Initialize everything as deselected */
+        for(i=0; i<availablePeoplecounters.length; i++) {
+        pc[availablePeoplecounters[i]] = {};
+        for(j=0; j<availableFields.length; j++) {
+            pc[availablePeoplecounters[i]][availableFields[j]] = 'off';
+        }
+    }
+    req.session.peoplecounters = pc;
+
+    var keys = Object.keys(req.body);
+    for(i=0; i<keys.length; i++) {
+        //Parts: ["pc", peoplecounter, field]
+        var parts = keys[i].split('_');
+        if(!(parts[1] in req.session.peoplecounters)) {
+            req.session.peoplecounters[parts[1]] = {};
+        }
+        req.session.peoplecounters[parts[1]][parts[2]] = req.body[keys[i]]; 
+    }
+    var pc = req.session.peoplecounters;
+    console.log("Rendering with sensor_selection: " + util.inspect(pc));
+    res.render('pages/sensor_selection', {peoplecounters: pc});
 });
 
 app.listen(port, function(){
