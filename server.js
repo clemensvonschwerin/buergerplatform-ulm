@@ -112,8 +112,8 @@ app.post('/sensor_selection', function(req, res) {
     for(i=0; i<keys.length; i++) {
         //Parts: ["pc", peoplecounter, field]
         var parts = keys[i].split('_');
-        console.log("Searching for " + parts[1] + " in " + Object.keys(req.session.peoplecounters));
-        if(!(parts[1] in Object.keys(req.session.peoplecounters))) {
+        console.log("Searching for " + parts[1] + " in " + req.session.peoplecounters);
+        if(!(parts[1] in req.session.peoplecounters)) {
             req.session.peoplecounters[parts[1]] = {};
             console.log("Not found, initialized empty object!");
         }
