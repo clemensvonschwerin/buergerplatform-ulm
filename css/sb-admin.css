@@ -374,12 +374,13 @@ body.sidebar-toggled footer.sticky-footer {
   }
 }
 
-.panel-heading .accordion-toggle:after {
-    /* symbol for "opening" panels */
+/* symbol for "opening" panels */
+/*.panel-heading .accordion-toggle:after {
+
     font-family: "Font Awesome 5";
-    content: "\f107";    /* adjust as needed, taken from bootstrap.css */
-    float: right;        /* adjust as needed */
-    color: grey;         /* adjust as needed */
+    content: "\f107";    
+    float: right;       
+    color: grey;        
 	position: relative;
 	@font-face {
 		font-family: 'Font Awesome 5';
@@ -390,6 +391,5 @@ body.sidebar-toggled footer.sticky-footer {
 
 }
 .panel-heading .accordion-toggle.collapsed:after {
-    /* symbol for "collapsed" panels */
-    content: "\f106";    /* adjust as needed, taken from bootstrap.css */
-}
+    content: "\f106";   
+}*/
