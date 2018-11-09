@@ -56,7 +56,9 @@ var dashboardf = function(req, res) {
                                 'orderByTime': 'ASC', 'policy': 'autogen',
                                 'resultFormat': 'time_series',
                                 'select': [fields],
-                                'tags': [{'key': 'busstop', 'operator': '=', 'value': key}]};
+                                'tags': [{'key': 'busstop', 'operator': '=', 'value': key}],
+                                'alias': key + ' ' + fields[0].params[0]
+                            };
                 targets.push(target);
             }
         }
